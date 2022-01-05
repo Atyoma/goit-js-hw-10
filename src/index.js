@@ -1,6 +1,7 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
+import { api, url } from './fetchCountries';
 
 const DEBOUNCE_DELAY = 300;
 
@@ -10,27 +11,21 @@ const refs = {
   countryInfo: document.querySelector('.country-info'),
 };
 
-const name = 'united';
+// const name = 'danmark';
 
 refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
 function onFormInput(e) {
-  console.log(name);
+  console.log(e.target.value);
+  //   e.preventDefault();
+  const stringValue = e.target.value;
+  const stringValueTrim = stringValue.trim();
+  api(stringValueTrim).then(createCountryCard).catch(onFetchErrror);
+  // .finally(() => e.target.value = '');
 }
 
-const searchParams = 'name,capital,population,flags,languages';
-
-fetch(`https://restcountries.com/v3.1/name/${name}?fields=${searchParams}`)
-  .then(response => {
-    return response.json();
-  })
-  .then(createCountryCard)
-
-  // const capital = countrys.map(country => country.capital);
-  // console.log(capital[0]);
-  .catch(error => {
-    console.log(error);
-  });
+// const capital = countrys.map(country => country.capital);
+// console.log(capital[0]);
 
 // renderCountryCard(name);
 // function renderCountryCard(name) {
@@ -53,4 +48,7 @@ function createCountryCard(countrys) {
       )}</p><p class="card-text">Population:${population}</p></div>`);
     })
     .join('');
+}
+function onFetchErrror(error) {
+  Notiflix.Notify.failure('Oops, there is no country with that name');
 }
