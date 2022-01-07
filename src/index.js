@@ -10,45 +10,50 @@ const refs = {
   countryList: document.querySelector('.country-list'),
   countryInfo: document.querySelector('.country-info'),
 };
-
-// const name = 'danmark';
-
+let maxCountry = 10;
 refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
 function onFormInput(e) {
   console.log(e.target.value);
-  //   e.preventDefault();
-  const stringValue = e.target.value;
-  const stringValueTrim = stringValue.trim();
-  api(stringValueTrim).then(createCountryCard).catch(onFetchErrror);
-  // .finally(() => e.target.value = '');
+
+  const stringValue = refs.searchBox.value.trim();
+
+  api(stringValue).then(createCountryCard).catch(onFetchErrror);
 }
-
-// const capital = countrys.map(country => country.capital);
-// console.log(capital[0]);
-
-// renderCountryCard(name);
-// function renderCountryCard(name) {
-//   const countryCard =
-//     '<div class="country-title"><img src="" alt=""><h2 class ="title">${name}</h2></div><div class="coutry-card"><p class="card-text">Capital:${capital}</p><p class="card-text">Languages:${Object.values(languages)}</p><p class="card-text">Population:${population}</p></div>';
-//   refs.countryInfo.innerHTML = countryCard;
-//   console.log('render html');
-// }
-//   https://restcountries.com/v2/{service}?fields={field},{field},{field}
 
 function createCountryCard(countrys) {
-  return countrys
-    .map(({ name, capital, population, flags, languages }) => {
-      return (refs.countryInfo.innerHTML = `<div class="country-title"><img src="${
-        flags.svg
-      }" alt="${name}" width ="80"><h2 class ="title">${
-        name.official
-      }</h2></div><div class="coutry-card"><p class="card-text">Capital:${capital}</p><p class="card-text">Languages:${Object.values(
-        languages,
-      )}</p><p class="card-text">Population:${population}</p></div>`);
-    })
-    .join('');
+  console.log(countrys.length);
+  if (countrys.length > maxCountry) {
+    Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
+    return (refs.countryInfo.innerHTML = '');
+  } else if (countrys.length < 10 && countrys.length !== 1) {
+    refs.countryInfo.innerHTML = '';
+    const markup = countrys
+      .map(
+        country =>
+          `<li><div class="country-title"><img src="${country.flags.svg}" alt="${country.name}" width ="40"><h2 class ="title">${country.name.official}</h2></div></li>`,
+      )
+      .join('');
+    refs.countryList.insertAdjacentHTML('beforeend', markup);
+  } else {
+    refs.countryInfo.innerHTML = '';
+    refs.countryList.innerHTML = '';
+    return countrys
+      .map(({ name, capital, population, flags, languages }) => {
+        return (refs.countryInfo.innerHTML = `<div class="country-title"><img src="${
+          flags.svg
+        }" alt="${name}" width ="80"><h2 class ="title">${
+          name.official
+        }</h2></div><div class="coutry-card"><p class="card-text">Capital:${capital}</p><p class="card-text">Languages:${Object.values(
+          languages,
+        )}</p><p class="card-text">Population:${population}</p></div>`);
+      })
+      .join('');
+  }
 }
+
 function onFetchErrror(error) {
-  Notiflix.Notify.failure('Oops, there is no country with that name');
+  refs.countryList.innerHTML = '';
+  refs.countryInfo.innerHTML = '';
+  Notiflix.Notify.failure(`❌ Oops, there is no country with that name`);
 }
