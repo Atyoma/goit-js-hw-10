@@ -10,14 +10,13 @@ const refs = {
   countryList: document.querySelector('.country-list'),
   countryInfo: document.querySelector('.country-info'),
 };
+
 let maxCountry = 10;
 refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
 function onFormInput(e) {
   console.log(e.target.value);
-
   const stringValue = refs.searchBox.value.trim();
-
   api(stringValue).then(createCountryCard).catch(onFetchErrror);
 }
 
