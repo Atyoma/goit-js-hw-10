@@ -43,9 +43,9 @@ function createCountryCard(countrys) {
           flags.svg
         }" alt="${name}" width ="80"><h2 class ="title">${
           name.official
-        }</h2></div><div class="coutry-card"><p class="card-text">Capital:${capital}</p><p class="card-text">Languages:${Object.values(
+        }</h2></div><div class="coutry-card"><p class="card-text">Capital: ${capital}</p><p class="card-text">Languages: ${Object.values(
           languages,
-        )}</p><p class="card-text">Population:${population}</p></div>`);
+        )}</p><p class="card-text">Population: ${population}</p></div>`);
       })
       .join('');
   }
