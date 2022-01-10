@@ -31,17 +31,15 @@ body {
 .country-list {
   list-style: none;
   padding: 5px;
-  padding: 10px;
-  background-color: #f1faf1;
 }
 
 .country-title {
   display: flex;
+  padding: 10px;
+  background-color: #f1faf1;
 }
 .country-item {
   margin-bottom: 10px;
-}
-.country-info {
   padding: 10px;
   background-color: #f1faf1;
 }
