@@ -15,8 +15,12 @@ let maxCountry = 10;
 refs.searchBox.addEventListener('input', debounce(onFormInput, DEBOUNCE_DELAY));
 
 function onFormInput(e) {
-  console.log(e.target.value);
+  // console.log(e.target.value);
   const stringValue = refs.searchBox.value.trim();
+  if (stringValue === '') {
+    return;
+  }
+  console.log(stringValue);
   api(stringValue).then(createCountryCard).catch(onFetchErrror);
 }
 
@@ -24,7 +28,9 @@ function createCountryCard(countrys) {
   console.log(countrys.length);
   if (countrys.length > maxCountry) {
     Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
-    return (refs.countryInfo.innerHTML = '');
+    refs.countryInfo.innerHTML = '';
+    refs.countryList.innerHTML = '';
+    return;
   } else if (countrys.length < 10 && countrys.length !== 1) {
     refs.countryInfo.innerHTML = '';
     const markup = countrys
