@@ -18,7 +18,7 @@ function onFormInput(e) {
   // console.log(e.target.value);
   const stringValue = refs.searchBox.value.trim();
   if (stringValue === '') {
-    return;
+    return onClearInput();
   }
   console.log(stringValue);
   api(stringValue).then(createCountryCard).catch(onFetchErrror);
@@ -27,22 +27,20 @@ function onFormInput(e) {
 function createCountryCard(countrys) {
   console.log(countrys.length);
   if (countrys.length > maxCountry) {
+    onClearInput();
     Notiflix.Notify.info(`Too many matches found. Please enter a more specific name.`);
-    refs.countryInfo.innerHTML = '';
-    refs.countryList.innerHTML = '';
     return;
   } else if (countrys.length < 10 && countrys.length !== 1) {
-    refs.countryInfo.innerHTML = '';
     const markup = countrys
       .map(
         country =>
-          `<li><div class="country-title"><img src="${country.flags.svg}" alt="${country.name}" width ="40"><h2 class ="title">${country.name.official}</h2></div></li>`,
+          `<li class="country-item"><div class="country-title"><img src="${country.flags.svg}" alt="${country.name}" width ="40"><h2 class ="title">${country.name.official}</h2></div></li>`,
       )
       .join('');
+    onClearInput();
     refs.countryList.insertAdjacentHTML('beforeend', markup);
   } else {
-    refs.countryInfo.innerHTML = '';
-    refs.countryList.innerHTML = '';
+    onClearInput();
     return countrys
       .map(({ name, capital, population, flags, languages }) => {
         return (refs.countryInfo.innerHTML = `<div class="country-title"><img src="${
@@ -58,7 +56,11 @@ function createCountryCard(countrys) {
 }
 
 function onFetchErrror(error) {
-  refs.countryList.innerHTML = '';
-  refs.countryInfo.innerHTML = '';
+  onClearInput();
   Notiflix.Notify.failure(`❌ Oops, there is no country with that name`);
+}
+
+function onClearInput() {
+  refs.countryInfo.innerHTML = '';
+  refs.countryList.innerHTML = '';
 }
